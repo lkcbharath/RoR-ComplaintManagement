@@ -49,3 +49,19 @@ gem 'bootstrap-sass', '3.3.7'
 gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
 > Added custom css
 > Updated application.html.erb to show sign in, up and account in app
+===========================
+
+latest
+
+-----------
+Also the function user_signed_in is provided to you by devise.
+-------------
+> rails generate migration add_column_user_id_to_complaints user_id:integer
+
+> added the lines `has_many :complaints` to models/user.rb 
+
+> `belongs_to :user` & `validates_presence_of :user` to models/complaint.rb
+
+> updated the line `@complaints = Complaint.where(:user_id => current_user.id)` to the index controller in complaints_controller.rb to generate views
+
+> added the line @complaint.user_id = current_user.id to create for adding a user id

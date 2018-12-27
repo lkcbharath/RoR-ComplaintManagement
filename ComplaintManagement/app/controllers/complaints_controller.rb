@@ -14,7 +14,8 @@ class ComplaintsController < ApplicationController
 
   # GET /complaints/new
   def new
-    @complaint = Complaint.new
+    # @complaint = Complaint.new
+    @complaints = Complaint.where(:user_id => current_user.id)
   end
 
   # GET /complaints/1/edit
@@ -25,7 +26,7 @@ class ComplaintsController < ApplicationController
   # POST /complaints.json
   def create
     @complaint = Complaint.new(complaint_params)
-
+    @complaint.user_id = current_user.id
     respond_to do |format|
       if @complaint.save
         format.html { redirect_to @complaint, notice: 'Complaint was successfully created.' }
