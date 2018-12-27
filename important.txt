@@ -1,0 +1,51 @@
+Complaint Management:
+1. User authentication with 1 admin user.
+2. Accept complains from all users.
+3. Allow admin (with special priveledges) to update the status of complaint from pending, to processing and complete.
+4. The person who created the complaint should be finally able to close the complaint after resolution.
+5. Make 2 different dashboards for normal users and resolving authorities.
+
+--
+
+===============================================================================
+
+Some setup you must do manually if you haven't yet:
+
+  1. Ensure you have defined default url options in your environments files. Here
+     is an example of default_url_options appropriate for a development environment
+     in config/environments/development.rb:
+
+       config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+     In production, :host should be set to the actual host of your application.
+
+  2. Ensure you have defined root_url to *something* in your config/routes.rb.
+     For example:
+
+       root to: "home#index"
+
+  3. Ensure you have flash messages in app/views/layouts/application.html.erb.
+     For example:
+
+       <p class="notice">< %= notice %></p>
+       <p class="alert"><%= alert %></p>
+
+  4. You can copy Devise views (for customization) to your app by running:
+
+       rails g devise:views
+
+=======================================================================
+
+Steps:
+> created the app ComplaintManagement
+> generated the scaffold Complaint name:string title:string details:text
+> added default route `root "complaints#index"` to routes.rb
+> changed database.yml
+> added gem 'devise' and did bundle install
+> generate views for User, and default views inside views folder for modification.
+> added filter `before_action :authenticate_user!` to complaints_controller.rb
+> # Use bootstrap-sass & jquery-rails to generate list of routes for easier modification
+gem 'bootstrap-sass', '3.3.7'
+gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
+> Added custom css
+> Updated application.html.erb to show sign in, up and account in app
