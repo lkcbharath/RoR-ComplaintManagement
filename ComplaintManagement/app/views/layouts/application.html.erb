@@ -12,7 +12,12 @@
   <body>
     <header class="navbar navbar-fixed-top navbar-inverse">
       <div class="container">
-        <%= link_to "sample app", '#', id: "logo" %>
+        <%#= link_to "sample app", '#', id: "logo" %>
+        <% if current_user.try(:admin?) %>
+          You're an admin
+        <% else %>
+          Just a regular user
+        <% end %>
         <nav>
           <ul class="nav navbar-nav navbar-right">
             <li><%= link_to "Home",   root_path , class: "btn "%></li>

@@ -5,9 +5,11 @@
 <table>
   <thead>
     <tr>
+      <th>ID</th>
       <th>Name</th>
       <th>Title</th>
-      <th>Details</th>
+<!--      <th>Details</th>-->
+      <th>Status</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -15,11 +17,33 @@
   <tbody>
     <% @complaints.each do |complaint| %>
       <tr>
+        <td><%= complaint.id %></td>
         <td><%= complaint.name %></td>
         <td><%= complaint.title %></td>
-        <td><%= complaint.details %></td>
+<!--        <td><%#= complaint.details %></td>-->
+        <td><%= complaint.status %></td>
         <td><%= link_to 'Show', complaint %></td>
         <td><%= link_to 'Edit', edit_complaint_path(complaint) %></td>
+
+        <% if current_user.admin %>
+          <% if complaint.pending? %>
+            <td><%= link_to 'Mark as Processing', update_status_complaint_path(complaint), method: :patch %></td>
+          <% elsif complaint.processing? %>
+            <td><%= link_to 'Mark as Complete', update_status_complaint_path(complaint), method: :patch %></td>
+          <%# else %>
+<!--            <td>Complete</td>-->
+          <% end %>
+
+        <% else %>
+          <% if complaint.pending? %>
+            <td>Pending</td>
+          <% elsif complaint.complete? %>
+            <td><%= link_to 'Mark as Resolved', update_status_complaint_path(complaint), method: :patch %></td>
+          <%# else %>
+<!--            <td>Resolved</td>-->
+          <% end %>
+        <% end %>
+
         <td><%= link_to 'Destroy', complaint, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>

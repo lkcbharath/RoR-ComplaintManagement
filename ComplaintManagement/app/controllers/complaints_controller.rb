@@ -1,10 +1,14 @@
 class ComplaintsController < ApplicationController
-  before_action :set_complaint, only: [:show, :edit, :update, :destroy]
+  before_action :set_complaint, only: [:show, :edit, :update, :destroy, :update_status]
   before_action :authenticate_user!
   # GET /complaints
   # GET /complaints.json
   def index
-    @complaints = Complaint.all
+    # @complaints = Complaint.all
+    @complaints = Complaint.where(:user_id => current_user.id)
+    if current_user.try(:admin?)
+      @complaints = Complaint.all
+    end
   end
 
   # GET /complaints/1
@@ -14,8 +18,8 @@ class ComplaintsController < ApplicationController
 
   # GET /complaints/new
   def new
-    # @complaint = Complaint.new
-    @complaints = Complaint.where(:user_id => current_user.id)
+    @complaint = Complaint.new
+
   end
 
   # GET /complaints/1/edit
@@ -27,6 +31,7 @@ class ComplaintsController < ApplicationController
   def create
     @complaint = Complaint.new(complaint_params)
     @complaint.user_id = current_user.id
+    @complaint.status = "Pending"
     respond_to do |format|
       if @complaint.save
         format.html { redirect_to @complaint, notice: 'Complaint was successfully created.' }
@@ -60,6 +65,20 @@ class ComplaintsController < ApplicationController
       format.html { redirect_to complaints_url, notice: 'Complaint was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def update_status
+    new_status = @complaint.status
+    if @complaint.status == 'Pending'
+      new_status = 'Processing'
+    elsif @complaint.status == 'Processing'
+      new_status = 'Complete'
+    elsif @complaint.status == 'Complete'
+      new_status = 'Resolved'
+    end
+
+    @complaint.update_attribute(:status, new_status)
+    redirect_to @complaint, notice: "Marked as " + new_status
   end
 
   private
