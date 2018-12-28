@@ -82,6 +82,14 @@ after complete, user can hit resolve.
 
 > Then using rails console, set an email to be the admin. If no email exists, create one then set it to admin.
 
+> modify migration to be: 
+
+class AddAdminToUsers < ActiveRecord::Migration
+  def change
+    add_column :users, :admin, :boolean, default: false
+  end
+end
+
 > to test if user is admin, use the method `current_user.try(:admin?)` .
 
 +++++++++++++++++++++
