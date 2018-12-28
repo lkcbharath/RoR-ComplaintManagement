@@ -48,11 +48,7 @@ Steps:
 gem 'bootstrap-sass', '3.3.7'
 gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
 > Added custom css
-> Updated application.html.erb to show sign in, up and account in app
-===========================
-
-latest
-
+> Updated application.html.erb to show sign in, up and account in app\
 -----------
 Also the function user_signed_in is provided to you by devise.
 -------------
@@ -65,3 +61,71 @@ Also the function user_signed_in is provided to you by devise.
 > updated the line `@complaints = Complaint.where(:user_id => current_user.id)` to the index controller in complaints_controller.rb to generate views
 
 > added the line @complaint.user_id = current_user.id to create for adding a user id
+================
+
+> add a status row describing the status of the complaint.
+
+> rails g migration add_column_status_to_complaints status:string
+
+> and set its default value to "Pending" during creation
+
+3 states: "Pending","Processing","Complete"
+
+> admin should be able to shift it from pending > processing, then processing > complete
+
+after complete, user can hit resolve.
+
+===========================================================
+> follow option 2 in https://github.com/plataformatec/devise/wiki/How-To:-Add-an-Admin-Role
+
+> rails g migration add_column_admin_to_user admin:boolean
+
+> Then using rails console, set an email to be the admin. If no email exists, create one then set it to admin.
+
+> to test if user is admin, use the method `current_user.try(:admin?)` .
+
++++++++++++++++++++++
+
+> add status to all .html.erb files
+> add these methods to controller model
+ def processing?
+    status == "Processing"
+  end
+
+  def pending?
+    status == "Pending"
+  end
+
+  def complete?
+    status = "Complete"
+  end
+
+> update routes.rb to this
+  resources :complaints do
+    member do
+      patch :update_status
+    end
+  end
+
+> define a method update_status in complaints_controller.rb
+
+def update_status
+    new_status = @complaint.status
+    if @complaint.status == 'Pending'
+      new_status = 'Processing'
+    elsif @complaint.status == 'Processing'
+      new_status = 'Complete'
+    elsif @complaint.status == 'Complete'
+      new_status = 'Resolved'
+    end
+
+    @complaint.update_attribute(:status, new_status)
+    redirect_to @complaint, notice: "Marked as " + new_status
+  end
+
+> update index.html.erb to accordingly use the models and method to update status from pending to processing, to complete, then to resolved.
+
+
+
+
+
