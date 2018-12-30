@@ -2,12 +2,12 @@
 
 After cloning, to run the application, type the following in a terminal opened at the root of it:
 
-	```
-	bundle install
-	rake db:create
-	rake db:migrate
-	rails s
-	```
+    ```
+    bundle install
+    rake db:create
+    rake db:migrate
+    rails s
+    ```
 
 and you will be able to see the application in action.
 
@@ -69,7 +69,7 @@ The objectives of this project are:
 
 - Modify the main HTML page, i.e. `app/layouts/application.html.erb` to display options for logging in and out, and account details:
 
-	```html
+	```html+erb
 	<!--...-->
 	<body>
 	    <header class="navbar navbar-fixed-top navbar-inverse">
@@ -218,7 +218,7 @@ The objectives of this project are:
 
 - To use the updated model and controller (also to differentiate between the User and Admin dashboards), edit the Index view (`index.html.erb`) to the following:
 
-	```html
+	```html+erb
 	<!--...-->
 	<td><%= link_to 'Delete', complaint, method: :delete, data: { confirm: 'Are you sure?' } %></td>>
 	<!--...-->
@@ -256,7 +256,7 @@ The objectives of this project are:
 
 - For different dashboards (i.e. identify users and the Admin seperately), modify the main application header (in `application.html.erb`) to match the following:
 
-	```html
+	```html+erb
 	<!--...-->
 	<header class="navbar navbar-fixed-top navbar-inverse">
           <div class="container">
@@ -307,7 +307,7 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 - Modify the form to match the following:
 
-	```html
+	```html+erb
 	<!--...-->
 	<div class="field">
           <%= form.label :title %>
@@ -326,7 +326,7 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 - Add the following field above the email field in `layouts/devise/new.html.erb` and `layouts/devise/edit.html.erb`:
 
-	```html
+	```html+erb
 	<div class="field">
           <%= f.label :name %><br />
           <%= f.text_field :name, autofocus: true %>
