@@ -5,11 +5,12 @@
   <%= @complaint.id %>
 </p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @complaint.name %>
-</p>
-
+<% if current_user.try(:admin?) %>
+  <p>
+    <strong>Name:</strong>
+    <%= @complaint.name %>
+  </p>
+<% end %>
 <p>
   <strong>Title:</strong>
   <%= @complaint.title %>

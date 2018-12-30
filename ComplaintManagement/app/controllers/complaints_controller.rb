@@ -31,7 +31,6 @@ class ComplaintsController < ApplicationController
   def create
     @complaint = Complaint.new(complaint_params)
     @complaint.user_id = current_user.id
-    @complaint.status = "Pending"
     respond_to do |format|
       if @complaint.save
         format.html { redirect_to @complaint, notice: 'Complaint was successfully created.' }
@@ -69,12 +68,16 @@ class ComplaintsController < ApplicationController
 
   def update_status
     new_status = @complaint.status
-    if @complaint.status == 'Pending'
-      new_status = 'Processing'
-    elsif @complaint.status == 'Processing'
-      new_status = 'Complete'
-    elsif @complaint.status == 'Complete'
-      new_status = 'Resolved'
+    if current_user.try(:admin?)
+      if @complaint.status == 'Pending'
+        new_status = 'Processing'
+      elsif @complaint.status == 'Processing'
+        new_status = 'Complete'
+      end
+    elsif @complaint.id == current_user.id
+        if @complaint.status == 'Complete'
+          new_status = 'Resolved'
+        end
     end
 
     @complaint.update_attribute(:status, new_status)

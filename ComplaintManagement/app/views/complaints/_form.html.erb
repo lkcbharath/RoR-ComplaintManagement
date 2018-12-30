@@ -18,7 +18,7 @@
 
   <div class="field">
     <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title, onkeyup: "changeHandler()" %>
   </div>
 
   <div class="field">
@@ -27,6 +27,7 @@
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit id: "complaint_submit", disabled: "disabled" %>
   </div>
+
 <% end %>
