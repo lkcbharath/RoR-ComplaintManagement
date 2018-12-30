@@ -114,7 +114,7 @@ The objectives of this project are:
 
 	```ruby
 	def index
-		@complaints = Complaint.where(:user_id => current_user.id)
+	  @complaints = Complaint.where(:user_id => current_user.id)
 	end
 	```
 
@@ -122,10 +122,10 @@ The objectives of this project are:
 
 	```ruby
 	def create
-	    @complaint = Complaint.new(complaint_params)
-	    @complaint.user_id = current_user.id
-	    respond_to do |format|
-	    #...
+	  @complaint = Complaint.new(complaint_params)
+	  @complaint.user_id = current_user.id
+	  respond_to do |format|
+	  #...
 	end
 	```
 
@@ -151,7 +151,7 @@ The objectives of this project are:
 		user.save
 		```
 
-	If no user has been created already, do so and set it to be the Admin.
+	If no user has been created already, do so and set it to be the Admin. 
 
 	* To test if a user is an admin, use the method 
 
@@ -235,9 +235,9 @@ The objectives of this project are:
 	```ruby
 	#...
 	resources :complaints do
-		member do
-			patch :update_status
-		end
+	  member do
+		patch :update_status
+	  end
 	end
 	#...
 	```
@@ -249,13 +249,13 @@ The objectives of this project are:
 	```html
 	<!--...-->
 	<header class="navbar navbar-fixed-top navbar-inverse">
-      	<div class="container">
-        	<% if current_user.try(:admin?) %>
-          		ADMIN DASHBOARD
-        	<% elsif current_user %>
-          		<%= current_user.name %>'s dashboard
-        	<% end %>
-        	<nav>
+      <div class="container">
+        <% if current_user.try(:admin?) %>
+          ADMIN DASHBOARD
+        <% elsif current_user %>
+          <%= current_user.name %>'s dashboard
+        <% end %>
+        <nav>
     <!--...-->
     ```
 
@@ -283,13 +283,13 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 	```javascript
 	function changeHandler() {
-	    var complaint_title = $("#complaint_title").val();
-	    var user_name = $("#user_name").val();
-	    if (complaint_title || user_name ){
-	        $("input[type=submit]").removeAttr("disabled");
-	    } else {
-	        $("input[type=submit]").attr("disabled", "disabled");
-	    }
+	  var complaint_title = $("#complaint_title").val();
+	  var user_name = $("#user_name").val();
+	  if (complaint_title || user_name ){
+	      $("input[type=submit]").removeAttr("disabled");
+	  } else {
+	      $("input[type=submit]").attr("disabled", "disabled");
+	  }
 	}
 	```
 
@@ -298,12 +298,12 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 	```html
 	<!--...-->
 	<div class="field">
-    	<%= form.label :title %>
-    	<%= form.text_field :title, onkeyup: "changeHandler()" %>
+      <%= form.label :title %>
+      <%= form.text_field :title, onkeyup: "changeHandler()" %>
   	</div>
   	<!--...-->
-  		<div class="actions">
-    	<%= form.submit id: "complaint_submit", disabled: "disabled" %>
+  	  <div class="actions">
+      <%= form.submit id: "complaint_submit", disabled: "disabled" %>
   	</div>
   	<!--...-->
   	```
@@ -314,8 +314,8 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 	```html
 	<div class="field">
-    	<%= f.label :name %><br />
-    	<%= f.text_field :name, autofocus: true %>
+      <%= f.label :name %><br />
+      <%= f.text_field :name, autofocus: true %>
   	</div>
   	```
 
@@ -329,10 +329,10 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 	```ruby
 	def sign_up_params
-    	params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation)
   	end
   	def account_update_params
-    	params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
   	end
   	```
 
