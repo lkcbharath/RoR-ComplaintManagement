@@ -129,6 +129,8 @@ The objectives of this project are:
 	end
 	```
 
+* * *
+
 ### Objective 1:
 
 - Add a boolean attribute 'admin' to every user by first:
@@ -137,13 +139,13 @@ The objectives of this project are:
 
 		`rails g migration add_column_admin_to_user admin:boolean`
 
-	* Before migrating, modify the migration to set the default value of the 'admin' attribute as False:
+	* Before migrating, modify the migration to set the default value of the 'admin' attribute as False, then perform the migration:
 
 		```ruby
 		add_column :users, :admin, :boolean, default: false
 		```
 
-	* Then using the Rails console (`rails c`), set a particular user to be the Administrator (or Admin) by updating the attribute 'admin' to True:
+	* Finally using the Rails console (`rails c`), set a particular user to be the Administrator (or Admin) by updating the attribute 'admin' to True:
 
 		```
 		user = User.first (or any user of your choice)
@@ -151,15 +153,20 @@ The objectives of this project are:
 		user.save
 		```
 
-	If no user has been created already, do so and set it to be the Admin. 
+		If no user has been created already, do so and set it to be the Admin. 
 
 	* To test if a user is an admin, use the method 
 
-		`current_user.try(:admin?)`
+		```ruby
+		current_user.try(:admin?)
+		```
+* * *
 
 ### Objective 2:
 
 - The objective is implicitly achieved i.e. all users can make a complaint by default.
+
+* * *
 
 ### Objective 3 & 4:
 
@@ -171,21 +178,21 @@ The objectives of this project are:
 	
 	```ruby
 	add_column :complaints, :status, :string, default: 'Pending'
-	
-  then perform the migration.
 	```
+
+	then perform the migration.
 
 - To check for the value of status, add these methods to the Complaint model:
 
 	```ruby
 	def processing?
-		status == "Processing"
+	  status == "Processing"
   	end
   	def pending?
-    	status == "Pending"
+    	  status == "Pending"
   	end
   	def complete?
-    	status == "Complete"
+    	  status == "Complete"
   	end
   	```
 
@@ -193,44 +200,43 @@ The objectives of this project are:
 
 	```ruby
 	def update_status
-      new_status = @complaint.status
-      if current_user.try(:admin?)
-        if @complaint.status == 'Pending'
-          new_status = 'Processing'
-        elsif @complaint.status == 'Processing'
-          new_status = 'Complete'
+          new_status = @complaint.status
+          if current_user.try(:admin?)
+            if @complaint.status == 'Pending'
+              new_status = 'Processing'
+            elsif @complaint.status == 'Processing'
+              new_status = 'Complete'
+            end
+          elsif @complaint.id == current_user.id
+            if @complaint.status == 'Complete'
+              new_status = 'Resolved'
+            end
+          @complaint.update_attribute(:status, new_status)
+	      redirect_to @complaint, notice: "Marked as " + new_status
         end
-      elsif @complaint.id == current_user.id
-        if @complaint.status == 'Complete'
-          new_status = 'Resolved'
-        end
-      @complaint.update_attribute(:status, new_status)
-	  redirect_to @complaint, notice: "Marked as " + new_status
-    end
-    ```
+        ```
 
 - To use the updated model and controller (also to differentiate between the User and Admin dashboards), edit the Index view (`index.html.erb`) to the following:
 
 	```html
 	<!--...-->
-    <td><%= link_to 'Delete', edit_complaint_path(complaint) %></td>
-    <!--...-->
-    <% if current_user.try(:admin?) %>
-      <% if complaint.pending? %>
-        <td><%= link_to 'Mark as Processing', update_status_complaint_path(complaint), method: :patch %></td>
-      <% elsif complaint.processing? %>
-        <td><%= link_to 'Mark as Complete', update_status_complaint_path(complaint), method: :patch %></td>
-      <% end %>
-    <% else %>
-      <% if complaint.pending? %>
-        <td>Pending</td>
-      <% elsif complaint.complete? %>
-        <td><%= link_to 'Mark as Resolved', update_status_complaint_path(complaint), method: :patch %></td>
-      <% end %>
-    <% end %>
-    <td><%= link_to 'Destroy', complaint, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-    <!--...-->
-     ```
+	<td><%= link_to 'Delete', complaint, method: :delete, data: { confirm: 'Are you sure?' } %></td>>
+	<!--...-->
+	<% if current_user.try(:admin?) %>
+	  <% if complaint.pending? %>
+	    <td><%= link_to 'Mark as Processing', update_status_complaint_path(complaint), method: :patch %></td>
+	  <% elsif complaint.processing? %>
+	    <td><%= link_to 'Mark as Complete', update_status_complaint_path(complaint), method: :patch %></td>
+	  <% end %>
+	<% else %>
+	   <% if complaint.pending? %>
+	     <td>Pending</td>
+	   <% elsif complaint.complete? %>
+	     <td><%= link_to 'Mark as Resolved', update_status_complaint_path(complaint), method: :patch %></td>
+	      <% end %>
+	 <% end %>
+	 <!--...-->
+	 ```
 
 - Add the corresponding method in the `routes.rb` file:
 
@@ -244,6 +250,8 @@ The objectives of this project are:
 	#...
 	```
 
+* * *
+
 ### Objective 5:
 
 - For different dashboards (i.e. identify users and the Admin seperately), modify the main application header (in `application.html.erb`) to match the following:
@@ -251,17 +259,19 @@ The objectives of this project are:
 	```html
 	<!--...-->
 	<header class="navbar navbar-fixed-top navbar-inverse">
-      <div class="container">
-        <% if current_user.try(:admin?) %>
-          ADMIN DASHBOARD
-        <% elsif current_user %>
-          <%= current_user.name %>'s dashboard
-        <% end %>
-        <nav>
-    <!--...-->
-    ```
+          <div class="container">
+            <% if current_user.try(:admin?) %>
+              ADMIN DASHBOARD
+            <% elsif current_user %>
+              <%= current_user.name %>'s dashboard
+            <% end %>
+            <nav>
+        <!--...-->
+        ```
 
 - The methods `current_user.try(:admin?)` and `current_user` can be used to check if the user is signed in and is an Admin or a regular user, for further UI improvements (check the Index & Show Views for an example).
+
+* * *
 
 ### Objective 6:
 
@@ -300,15 +310,17 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 	```html
 	<!--...-->
 	<div class="field">
-      <%= form.label :title %>
-      <%= form.text_field :title, onkeyup: "changeHandler()" %>
+          <%= form.label :title %>
+          <%= form.text_field :title, onkeyup: "changeHandler()" %>
   	</div>
   	<!--...-->
-  	  <div class="actions">
-      <%= form.submit id: "complaint_submit", disabled: "disabled" %>
+  	<div class="actions">
+          <%= form.submit id: "complaint_submit", disabled: "disabled" %>
   	</div>
   	<!--...-->
   	```
+
+* * *
 
 ### Objective 7:
 
@@ -316,12 +328,12 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 	```html
 	<div class="field">
-      <%= f.label :name %><br />
-      <%= f.text_field :name, autofocus: true %>
+          <%= f.label :name %><br />
+          <%= f.text_field :name, autofocus: true %>
   	</div>
   	```
 
-> Also remove the 'autofocus' attribute from the email field.
+	Also remove the 'autofocus' attribute from the email field.
 
 - Generate the User registration controller by the following command:
 
@@ -331,20 +343,24 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
 
 	```ruby
 	def sign_up_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+          params.require(:user).permit(:name, :email, :password, :password_confirmation)
   	end
   	def account_update_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
+          params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
   	end
   	```
 
 - To use this new controller as the User registrations controller, add it as a route to routes.rb:
 
-	`devise_for :users, controllers: { registrations: 'users/registrations' }`
+	```ruby
+	devise_for :users, controllers: { registrations: 'users/registrations' }
+	```
 
 - In the User model, to perform server-side validation, add the line
 
-	`validates :name, presence: true`
+	```ruby
+	validates :name, presence: true
+	```
 
 - For client-side validation, modify the text fields and the submit button by following the proceedure outlined in Objective 6.
 
