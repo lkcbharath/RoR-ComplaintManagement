@@ -167,10 +167,12 @@ The objectives of this project are:
 	
 	`rails g migration add_column_status_to_complaint status:string`
 
-- Modify the migration to set the default value of 'status' to "Pending", then perform the migration.
+- Modify the migration to set the default value of 'status' to "Pending", 
 	
 	```ruby
 	add_column :complaints, :status, :string, default: 'Pending'
+	
+  then perform the migration.
 	```
 
 - To check for the value of status, add these methods to the Complaint model:
@@ -183,7 +185,7 @@ The objectives of this project are:
     	status == "Pending"
   	end
   	def complete?
-    	status = "Complete"
+    	status == "Complete"
   	end
   	```
 
