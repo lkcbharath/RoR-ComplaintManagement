@@ -1,6 +1,6 @@
 # RoR-ComplaintManagement
 
-After cloning, to run the application, type the following in a terminal opened at the root of it:
+- After cloning, to run the application, type the following in a terminal opened at the root of it:
 
 	```
 	bundle install
@@ -9,7 +9,7 @@ After cloning, to run the application, type the following in a terminal opened a
 	rails s
 	```
 
-and you will be able to see the application in action.
+	and you will be able to see the application in action.
 
 ## Objectives:
 
@@ -35,7 +35,7 @@ The objectives of this project are:
 
 	`rails create new ComplaintManagement -d mysql`
 
-- Navigate to the folder and then generate a scaffold with the model name as Complaint, and three fields being the Name, Title and Details using:
+- Navigate to the folder and then generate a scaffold to generate the MVC for the table with the resource name as Complaint, and three fields being the Name, Title and Details using:
 
 	`rails g Complaint name:string title:string details:text`
 
@@ -72,24 +72,24 @@ The objectives of this project are:
 	```html
 	<!--...-->
 	<body>
-	    <header class="navbar navbar-fixed-top navbar-inverse">
-	      <div class="container">
-	        <nav>
-	          <ul class="nav navbar-nav navbar-right">
-	            <li><%= link_to "Home",   root_path , class: "btn "%></li>
-	            <% if user_signed_in? %>
-	              <li><%= link_to "Account", edit_user_registration_path, class: "btn "  %></li>
-	              <li>
-	                <%= link_to('Logout', destroy_user_session_path, method: :delete) %>
-	              </li>
-	            <% else %>
-	              <li><%= link_to "Sign Up", new_user_registration_path, class: "btn " %></li>
-	              <li><%= link_to "Sign In", new_user_session_path, class: "btn " %></li>
-	            <% end %>
-	          </ul>
-	        </nav>
-	      </div>
-	    </header>
+	  <header class="navbar navbar-fixed-top navbar-inverse">
+	    <div class="container">
+          <nav>
+            <ul class="nav navbar-nav navbar-right">
+	          <li><%= link_to "Home",   root_path , class: "btn "%></li>
+	          <% if user_signed_in? %>
+	            <li><%= link_to "Account", edit_user_registration_path, class: "btn "  %></li>
+	            <li>
+	              <%= link_to('Logout', destroy_user_session_path, method: :delete) %>
+	            </li>
+	          <% else %>
+	            <li><%= link_to "Sign Up", new_user_registration_path, class: "btn " %></li>
+	            <li><%= link_to "Sign In", new_user_session_path, class: "btn " %></li>
+	          <% end %>
+	        </ul>
+	      </nav>
+	    </div>
+	  </header>
 	<!--...-->
 	```
 
@@ -118,7 +118,7 @@ The objectives of this project are:
 	end
 	```
 
-- Associate each complaint with the user ID on creation in the Complaint controller:
+- Associate each complaint with the user ID on creation in the Complaint controller method:
 
 	```ruby
 	def create
@@ -155,7 +155,9 @@ The objectives of this project are:
 
 	* To test if a user is an admin, use the method 
 
-		`current_user.try(:admin?)`
+		```ruby
+		current_user.try(:admin?)
+		```
 
 ### Objective 2:
 
@@ -177,34 +179,43 @@ The objectives of this project are:
 
 	```ruby
 	def processing?
-		status == "Processing"
+	  status == "Processing"
   	end
   	def pending?
-    	status == "Pending"
+      status == "Pending"
   	end
   	def complete?
-    	status = "Complete"
+      status = "Complete"
   	end
   	```
 
-- Define a new Complaint controller method to update the status according to the specifications, and validate it against the user:
+
+- Define a new Complaint controller to update the status according to the specifications (using the PATCH method), and validate it against the user:
 
 	```ruby
 	def update_status
-      new_status = @complaint.status
-      if current_user.try(:admin?)
-        if @complaint.status == 'Pending'
-          new_status = 'Processing'
-        elsif @complaint.status == 'Processing'
-          new_status = 'Complete'
-        end
-      elsif @complaint.id == current_user.id
-        if @complaint.status == 'Complete'
-          new_status = 'Resolved'
-        end
+      new_status = @complaint.new_status(current_user)
       @complaint.update_attribute(:status, new_status)
 	  redirect_to @complaint, notice: "Marked as " + new_status
     end
+    ```
+
+- Define a new function in the Complaint model to return the new status to update in the method above:
+
+	```ruby
+	def new_status(current_user)
+	  new_status = status
+	  if current_user.try(:admin?)
+	    if pending?
+	      new_status = 'Processing'
+	    elsif processing?
+	      new_status = 'Complete'
+	    end
+   	  elsif id == current_user.id && complete?
+	    new_status = 'Resolved'
+	  end
+	  return new_status
+	end
     ```
 
 - To use the updated model and controller (also to differentiate between the User and Admin dashboards), edit the Index view (`index.html.erb`) to the following:
@@ -259,11 +270,11 @@ The objectives of this project are:
     <!--...-->
     ```
 
-- The methods `current_user.try(:admin?)` and `current_user` can be used to check if the user is signed in and is an Admin or a regular user, for further UI improvements (check the Index & Show Views for an example).
+- The methods `current_user.try(:admin?)` and `current_user` can be used to check if the user is signed in and is an Admin or a regular user, for further UI improvements (check the modified Index & Show Views for an example).
 
 ### Objective 6:
 
-Disclaimer: This approach is not fully DRY due to issues I've run into with jQuery and Rails.
+Disclaimer: This approach (specifically the JS function and HTML+ERB form) is not fully DRY due to issues I've run into with jQuery and Rails.
 
 - To validate the title from the server-side (Model validation), add this line to the Complaint model:
 
@@ -319,7 +330,7 @@ Disclaimer: This approach is not fully DRY due to issues I've run into with jQue
   	</div>
   	```
 
-> Also remove the 'autofocus' attribute from the email field.
+> Also remove the `autofocus` attribute from the email field.
 
 - Generate the User registration controller by the following command:
 

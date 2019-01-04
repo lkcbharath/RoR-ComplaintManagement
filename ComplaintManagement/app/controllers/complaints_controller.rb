@@ -67,19 +67,7 @@ class ComplaintsController < ApplicationController
   end
 
   def update_status
-    new_status = @complaint.status
-    if current_user.try(:admin?)
-      if @complaint.status == 'Pending'
-        new_status = 'Processing'
-      elsif @complaint.status == 'Processing'
-        new_status = 'Complete'
-      end
-    elsif @complaint.id == current_user.id
-        if @complaint.status == 'Complete'
-          new_status = 'Resolved'
-        end
-    end
-
+    new_status = @complaint.new_status(current_user)
     @complaint.update_attribute(:status, new_status)
     redirect_to @complaint, notice: "Marked as " + new_status
   end

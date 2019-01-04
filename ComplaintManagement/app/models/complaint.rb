@@ -16,4 +16,18 @@ class Complaint < ApplicationRecord
     status == "Complete"
   end
 
+  def new_status(current_user)
+    new_status = status
+    if current_user.try(:admin?)
+      if pending?
+        new_status = 'Processing'
+      elsif processing?
+        new_status = 'Complete'
+      end
+    elsif id == current_user.id && complete?
+      new_status = 'Resolved'
+    end
+    return new_status
+  end
+
 end
