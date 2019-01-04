@@ -76,7 +76,7 @@ The objectives of this project are:
 	    <div class="container">
           <nav>
             <ul class="nav navbar-nav navbar-right">
-	          <li><%= link_to "Home",   root_path , class: "btn "%></li>
+	      <li><%= link_to "Home",   root_path , class: "btn "%></li>
 	          <% if user_signed_in? %>
 	            <li><%= link_to "Account", edit_user_registration_path, class: "btn "  %></li>
 	            <li>
@@ -160,10 +160,8 @@ The objectives of this project are:
 		```ruby
 		current_user.try(:admin?)
 		```
-<<<<<<< HEAD
-=======
+
 * * *
->>>>>>> 8ef751afbc00b8b86664411e2899e07c308a43fa
 
 ### Objective 2:
 
@@ -192,18 +190,11 @@ The objectives of this project are:
 	  status == "Processing"
   	end
   	def pending?
-<<<<<<< HEAD
-      status == "Pending"
+          status == "Pending"
   	end
   	def complete?
-      status = "Complete"
-=======
-    	  status == "Pending"
-  	end
-  	def complete?
-    	  status == "Complete"
->>>>>>> 8ef751afbc00b8b86664411e2899e07c308a43fa
-  	end
+	  status == "Complete"
+	end
   	```
 
 
@@ -211,29 +202,11 @@ The objectives of this project are:
 
 	```ruby
 	def update_status
-<<<<<<< HEAD
-      new_status = @complaint.new_status(current_user)
-      @complaint.update_attribute(:status, new_status)
-	  redirect_to @complaint, notice: "Marked as " + new_status
-    end
-    ```
-=======
-          new_status = @complaint.status
-          if current_user.try(:admin?)
-            if @complaint.status == 'Pending'
-              new_status = 'Processing'
-            elsif @complaint.status == 'Processing'
-              new_status = 'Complete'
-            end
-          elsif @complaint.id == current_user.id
-            if @complaint.status == 'Complete'
-              new_status = 'Resolved'
-            end
+          new_status = @complaint.new_status(current_user)
           @complaint.update_attribute(:status, new_status)
-	      redirect_to @complaint, notice: "Marked as " + new_status
+	  redirect_to @complaint, notice: "Marked as " + new_status
         end
         ```
->>>>>>> 8ef751afbc00b8b86664411e2899e07c308a43fa
 
 - Define a new function in the Complaint model to return the new status to update in the method above:
 
@@ -369,13 +342,8 @@ Disclaimer: This approach (specifically the JS function and HTML+ERB form) is no
           <%= f.text_field :name, autofocus: true %>
   	</div>
   	```
-
-<<<<<<< HEAD
-> Also remove the `autofocus` attribute from the email field.
-=======
 	Also remove the 'autofocus' attribute from the email field.
->>>>>>> 8ef751afbc00b8b86664411e2899e07c308a43fa
-
+		  
 - Generate the User registration controller by the following command:
 
 	`rails generate devise:controllers users -c=registrations`
