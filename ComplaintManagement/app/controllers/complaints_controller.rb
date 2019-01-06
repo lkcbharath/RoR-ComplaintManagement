@@ -19,7 +19,6 @@ class ComplaintsController < ApplicationController
   # GET /complaints/new
   def new
     @complaint = Complaint.new
-
   end
 
   # GET /complaints/1/edit

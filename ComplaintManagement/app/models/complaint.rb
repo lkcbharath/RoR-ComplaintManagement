@@ -24,7 +24,7 @@ class Complaint < ApplicationRecord
       elsif processing?
         new_status = 'Complete'
       end
-    elsif id == current_user.id && complete?
+    elsif user_id == current_user.id && complete?
       new_status = 'Resolved'
     end
     return new_status

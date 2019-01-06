@@ -42,9 +42,7 @@
           <% end %>
 
         <% else %>
-          <% if complaint.pending? %>
-            <td>Pending</td>
-          <% elsif complaint.complete? %>
+          <% if complaint.complete? %>
             <td><%= link_to 'Mark as Resolved', update_status_complaint_path(complaint,current_user), method: :patch %></td>
           <% end %>
         <% end %>
